@@ -6,23 +6,23 @@ require 'json'
 require 'hashie'
 require 'base64'
 
-class AlljpCrawler
+require 'thread'
+require 'thwait'
+
+module AlljpCrawler
   attr_accessor :entries
 
-  def initialize
-    @clnt = HTTPClient.new
-  end
-
-  def get_entries
+  def self.get_entries
     # http://www.blogger.com/feeds/5116243093071042692/posts/summary?alt=json&start-index=2&max-results=1
-    feed_response = Hashie::Mash.new JSON.parse(@clnt.get_content("http://www.alljpop.info/feeds/posts/summary?max-results=30&alt=json"))
+    feed_response = Hashie::Mash.new JSON.parse(clnt.get_content("http://www.alljpop.info/feeds/posts/summary?max-results=30&alt=json"))
 
     @entries = feed_response.feed.entry.map{|ent| AlljpEntry.new(ent)}
 
+    threads = []
     @entries.each do |entry|
 
-      Thread.new do
-        doc = Nokogiri::HTML(@clnt.get_content entry.link)
+      threads << Thread.new do
+        doc = Nokogiri::HTML(clnt.get_content entry.link)
 
         urls = doc.css('.sURL a:not(:first-child)').map do |a|
           [a[:id], Base64.decode64(URI(a[:href]).query.match(/(?<=url=).+/).to_s) ]
@@ -36,8 +36,13 @@ class AlljpCrawler
 
     end
 
+    ThreadsWait.all_waits(*threads)
     @entries
   end # end get_entries
+
+  def self.clnt
+    @@http_client ||= HTTPClient.new
+  end
 end
 
 class AlljpEntry

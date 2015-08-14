@@ -9,8 +9,6 @@ gem 'foreman'
 gem 'sidekiq'
 gem 'clockwork'
 
-gem 'dotenv'
-
 # crawler basic
 gem 'httpclient'
 gem 'nokogiri'
@@ -18,7 +16,7 @@ gem 'hashie'
 
 gem 'rmega'
 
-group :development do
+group :development, :test do
   gem "rake", "~> 10.0"
   gem "rspec"
   gem "rspec-nc"
@@ -29,4 +27,5 @@ group :development do
   gem "pry-remote"
   gem "pry-nav"
   gem "simplecov", "~> 0.10"
+  gem 'dotenv'
 end
