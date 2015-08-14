@@ -20,6 +20,7 @@ class AlljpCrawler
     @entries = feed_response.feed.entry.map{|ent| AlljpEntry.new(ent)}
 
     @entries.each do |entry|
+
       Thread.new do
         doc = Nokogiri::HTML(@clnt.get_content entry.link)
 
@@ -28,15 +29,20 @@ class AlljpCrawler
         end
 
         entry.download_links = Hash[ urls ]
-      end
+
+        img = doc.css('#PostsContents img')[0]
+        entry.cover_img = img && img[:src]
+      end # end Thread
+
     end
 
-  end
+    @entries
+  end # end get_entries
 end
 
 class AlljpEntry
-  attr_reader :title, :summary, :link, :authors, :thumbnail
-  attr_accessor :download_links
+  attr_reader :id, :title, :summary, :link, :authors, :thumbnail, :published, :updated
+  attr_accessor :download_links, :cover_img
 
   def initialize(mesh_entry)
     @title = mesh_entry.title["$t"]
@@ -46,5 +52,9 @@ class AlljpEntry
 
     lnk = mesh_entry.link.find{|l| l.rel == "alternate"}
     lnk && @link = lnk.href
+
+    @id = mesh_entry.id["$t"]
+    @published = mesh_entry.published["$t"]
+    @updated = mesh_entry.updated["$t"]
   end
 end
