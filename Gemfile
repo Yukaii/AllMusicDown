@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem 'sinatra'
 gem 'slim'
+gem 'sanitize'
 
 # server things
 gem 'thin'
@@ -15,6 +16,9 @@ gem 'nokogiri'
 gem 'hashie'
 
 gem 'rmega'
+
+gem 'rtesseract'
+gem "rmagick", "~>2.13.2", :require => 'RMagick'
 
 group :development, :test do
   gem "rake", "~> 10.0"
