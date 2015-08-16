@@ -1,15 +1,8 @@
-require 'httpclient'
-
-require 'nokogiri'
 require 'json'
-
-require 'hashie'
 require 'base64'
 
 require 'thread'
 require 'thwait'
-
-require 'rtesseract'
 
 module AlljpCrawler
   attr_accessor :entries
@@ -19,14 +12,12 @@ module AlljpCrawler
     feed_response = Hashie::Mash.new JSON.parse(clnt.get_content("http://www.alljpop.info/feeds/posts/summary?max-results=50&alt=json"))
 
     @entries = feed_response.feed.entry.map do |ent|
-      entry = nil
       begin
         entry = Entry.find(ent.id["$t"])
       rescue Mongoid::Errors::DocumentNotFound => e
         entry = Entry.new.from_mesh(ent)
         entry.save!
       end
-      entry
     end
 
     threads = []
@@ -51,7 +42,7 @@ module AlljpCrawler
 
             entry.save!
           end
-        end
+        end # end entry nil
       end # end Thread
     end
 
