@@ -32,4 +32,5 @@ group :development, :test do
   gem "pry-nav"
   gem "simplecov", "~> 0.10"
   gem 'dotenv'
+  gem 'tux'
 end
