@@ -1,0 +1,3 @@
+require 'ripl/color_error'
+require 'ripl/color_streams'
+require 'ripl/color_result'

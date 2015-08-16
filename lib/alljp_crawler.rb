@@ -18,33 +18,44 @@ module AlljpCrawler
     # http://www.blogger.com/feeds/5116243093071042692/posts/summary?alt=json&start-index=2&max-results=1
     feed_response = Hashie::Mash.new JSON.parse(clnt.get_content("http://www.alljpop.info/feeds/posts/summary?max-results=50&alt=json"))
 
-    @entries = feed_response.feed.entry.map{|ent| AlljpEntry.new(ent)}
+    @entries = feed_response.feed.entry.map do |ent|
+      entry = nil
+      begin
+        entry = Entry.find(ent.id["$t"])
+      rescue Mongoid::Errors::DocumentNotFound => e
+        entry = Entry.new.from_mesh(ent)
+        entry.save!
+      end
+      entry
+    end
 
     threads = []
     @entries.each do |entry|
 
       threads << Thread.new do
-        doc = Nokogiri::HTML(clnt.get_content entry.link)
+        if entry.direct_links.nil? || entry.direct_links.empty?
+          doc = Nokogiri::HTML(clnt.get_content entry.link)
 
-        urls = doc.css('.sURL a:not(:first-child)').map do |a|
-          [a[:id], Base64.decode64(URI(a[:href]).query.match(/(?<=url=).+/).to_s) ]
-        end
+          urls = doc.css('.sURL a:not(:first-child)').map do |a|
+            [a[:id], Base64.decode64(URI(a[:href]).query.match(/(?<=url=).+/).to_s) ]
+          end
 
-        entry.download_links = Hash[ urls ]
+          entry.download_links = Hash[ urls ]
 
-        img = doc.css('#PostsContents img')[0]
-        entry.cover_img = img && img[:src]
+          img = doc.css('#PostsContents img')[0]
+          entry.cover_img = img && img[:src]
 
-        entry.download_links.each do |_tpe, _lnk|
-          entry.direct_links ||= {}
-          entry.direct_links.merge!(resolve_download(_tpe, _lnk))
+          entry.download_links.each do |_tpe, _lnk|
+            entry.direct_links ||= {}
+            entry.direct_links.merge!(resolve_download(_tpe, _lnk))
+
+            entry.save!
+          end
         end
       end # end Thread
-
     end
 
     ThreadsWait.all_waits(*threads)
-    # binding.pry
     @entries
   end # end get_entries
 
@@ -104,25 +115,5 @@ module AlljpCrawler
     end
 
     {}
-  end
-
-end
-
-class AlljpEntry
-  attr_reader :id, :title, :summary, :link, :authors, :thumbnail, :published, :updated
-  attr_accessor :download_links, :cover_img, :direct_links
-
-  def initialize(mesh_entry)
-    @title = mesh_entry.title["$t"]
-    @summary = mesh_entry.summary["$t"]
-    @authors = mesh_entry.author.map{|aut| aut.name["$t"]}
-    @thumbnail = mesh_entry["media$thumbnail"].url
-
-    lnk = mesh_entry.link.find{|l| l.rel == "alternate"}
-    lnk && @link = lnk.href
-
-    @id = mesh_entry.id["$t"]
-    @published = mesh_entry.published["$t"]
-    @updated = mesh_entry.updated["$t"]
   end
 end

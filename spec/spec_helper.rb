@@ -2,6 +2,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'pry'
 require 'simplecov'
+require './config'
 
 SimpleCov.start
 

@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require './config'
 
-require_relative './lib/alljp_crawler'
+# require_relative './lib/alljp_crawler'
 
 module AlljpDown
   class Application < Sinatra::Base
