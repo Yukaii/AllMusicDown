@@ -20,6 +20,14 @@ gem 'rmega'
 gem 'rtesseract'
 gem "rmagick", "~>2.13.2", :require => 'RMagick'
 
+# mongoid things
+gem 'mongoid'
+
+# ripl things
+gem 'ripl-color_result'
+gem 'ripl-color_streams'
+gem 'ripl-color_error'
+
 group :development, :test do
   gem "rake", "~> 10.0"
   gem "rspec"

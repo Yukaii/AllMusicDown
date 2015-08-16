@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      database: alljpdown
+      hosts:
+        - localhost:27017
