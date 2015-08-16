@@ -1,5 +1,9 @@
+require 'kaminari/models/mongoid_extension'
+
 class Entry
   include Mongoid::Document
+  include Mongoid::Timestamps
+  include Kaminari::MongoidExtension::Document
 
   field :_id, type: String
   field :title, type: String

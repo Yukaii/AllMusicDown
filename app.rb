@@ -11,8 +11,8 @@ module AlljpDown
     end
 
     get '/' do
-      entries = AlljpCrawler.get_entries
-      slim :index, locals: {entries: entries}
+      @entries = Entry.all.page(params[:page]).per(params[:per_page])
+      slim :index
     end
 
   end

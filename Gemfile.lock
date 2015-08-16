@@ -1,6 +1,19 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    actionpack (4.2.3)
+      actionview (= 4.2.3)
+      activesupport (= 4.2.3)
+      rack (~> 1.6)
+      rack-test (~> 0.6.2)
+      rails-dom-testing (~> 1.0, >= 1.0.5)
+      rails-html-sanitizer (~> 1.0, >= 1.0.2)
+    actionview (4.2.3)
+      activesupport (= 4.2.3)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+      rails-dom-testing (~> 1.0, >= 1.0.5)
+      rails-html-sanitizer (~> 1.0, >= 1.0.2)
     activemodel (4.2.3)
       activesupport (= 4.2.3)
       builder (~> 3.1)
@@ -25,6 +38,7 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     dotenv (2.0.2)
+    erubis (2.7.0)
     eventmachine (1.0.8)
     ffi (1.9.10)
     foreman (0.78.0)
@@ -50,9 +64,14 @@ GEM
     httpclient (2.6.0.1)
     i18n (0.7.0)
     json (1.8.3)
+    kaminari (0.16.3)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     listen (3.0.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
+    loofah (2.0.2)
+      nokogiri (>= 1.5.9)
     lumberjack (1.0.9)
     method_source (0.8.2)
     mini_portile (0.6.2)
@@ -91,6 +110,14 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+    rails-deprecated_sanitizer (1.0.3)
+      activesupport (>= 4.2.0.alpha)
+    rails-dom-testing (1.0.7)
+      activesupport (>= 4.2.0.beta, < 5.0)
+      nokogiri (~> 1.6.0)
+      rails-deprecated_sanitizer (>= 1.0.1)
+    rails-html-sanitizer (1.0.2)
+      loofah (~> 2.0)
     rake (10.4.2)
     rb-fsevent (0.9.5)
     rb-inotify (0.9.5)
@@ -191,6 +218,7 @@ DEPENDENCIES
   guard-rspec
   hashie
   httpclient
+  kaminari
   mongoid
   nokogiri
   pry

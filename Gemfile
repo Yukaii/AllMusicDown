@@ -1,8 +1,10 @@
 source "https://rubygems.org"
 
 gem 'sinatra'
+
 gem 'slim'
 gem 'sanitize'
+gem 'kaminari'
 
 # server things
 gem 'thin'
