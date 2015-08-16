@@ -1,6 +1,6 @@
 development:
   sessions:
     default:
-      database: alljpdown
+      database: allmusicdown
       hosts:
         - localhost:27017

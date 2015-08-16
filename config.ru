@@ -7,6 +7,6 @@ Sidekiq::Web.use Rack::Session::Cookie, :secret => ENV['RACK_SESSION_COOKIE']
 Sidekiq::Web.instance_eval { @middleware.reverse! }
 
 run Rack::URLMap.new({
-  '/' => AlljpDown::Application,
+  '/' => AllMusicDown::Application,
   '/sidekiq' => Sidekiq::Web
 })
