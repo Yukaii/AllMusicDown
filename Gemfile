@@ -1,10 +1,11 @@
 source "https://rubygems.org"
 
 gem 'sinatra'
+gem 'sinatra-contrib'
 
 gem 'slim'
 gem 'sanitize'
-gem 'kaminari'
+gem 'kaminari', :require => 'kaminari/sinatra'
 
 # server things
 gem 'thin'
