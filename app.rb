@@ -23,7 +23,7 @@ module AllMusicDown
     end
 
     get '/entries' do
-      Entry.all.page(params[:page]).per(params[:per_page]).to_json
+      Entry.order_by(:created_at => 'desc').page(params[:page]).per(params[:per_page]).to_json
     end
 
   end
