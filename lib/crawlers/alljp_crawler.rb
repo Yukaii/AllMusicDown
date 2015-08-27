@@ -25,23 +25,7 @@ module AlljpCrawler
 
       threads << Thread.new do
         if entry.direct_links.nil? || entry.direct_links.empty?
-          doc = Nokogiri::HTML(clnt.get_content entry.link)
-
-          urls = doc.css('.sURL a:not(:first-child)').map do |a|
-            [a[:id], Base64.decode64(URI(a[:href]).query.match(/(?<=url=).+/).to_s) ]
-          end
-
-          entry.download_links = Hash[ urls ]
-
-          img = doc.css('#PostsContents img')[0]
-          entry.cover_img = img && img[:src]
-
-          entry.download_links.each do |_tpe, _lnk|
-            entry.direct_links ||= {}
-            entry.direct_links.merge!(resolve_download(_tpe, _lnk))
-
-            entry.save!
-          end
+          parse_entry(entry)
         end # end entry nil
       end # end Thread
     end
@@ -49,6 +33,28 @@ module AlljpCrawler
     ThreadsWait.all_waits(*threads)
     @entries
   end # end get_entries
+
+  def self.parse_entry entry
+    doc = Nokogiri::HTML(clnt.get_content entry.link)
+
+    urls = doc.css('.sURL a:not(:first-child)').map do |a|
+      [a[:id], Base64.decode64(URI(a[:href]).query.match(/(?<=url=).+/).to_s) ]
+    end
+
+    entry.download_links = Hash[ urls ]
+
+    img = doc.css('#PostsContents img')[0]
+    entry.cover_img = img && img[:src]
+
+    entry.download_links.each do |_tpe, _lnk|
+      entry.direct_links ||= {}
+      entry.direct_links.merge!(resolve_download(_tpe, _lnk))
+
+      entry.save!
+    end
+
+    entry
+  end
 
   def self.clnt
     @@http_client ||= HTTPClient.new

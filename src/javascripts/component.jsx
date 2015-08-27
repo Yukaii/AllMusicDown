@@ -6,33 +6,63 @@ import _ from 'underscore'
 import polyfill from 'es6-promise';
 import 'isomorphic-fetch';
 
+import Infinite from 'react-infinite';
+
 var Album = React.createClass({
+
+  getInitialState: function() {
+    return {
+      isExpanded: false
+    }
+  },
+
+  expandDetail: function() {
+    this.setState({ isExpanded: !this.state.isExpanded });
+  },
+
   render: function() {
     var album = this.props.album;
 
-    var summaryStyle = {
-      whiteSpace: 'pre-wrap'
+    var albumStyle = {
+      summary: {
+        whiteSpace: 'pre-wrap'
+      },
+      detail: {
+
+      },
+      expanded: {
+        display: 'block'
+      }
     }
 
     return(
       <div className="album">
         <img src={ album.cover_img } />
         <h3>{ album.title }</h3>
-        <div className="album-summary" style={summaryStyle}>
-          { album.summary }
+        <a onClick={ this.expandDetail }>{ this.state.isExpanded ? 'Less' : 'More' }</a>
+        <div className="album-detail" style={
+          _.extend( {},
+            albumStyle.detail,
+            { display: 'none' },
+            this.state.isExpanded && albumStyle.expanded)
+          }>
+          <div className="album-summary" style={ albumStyle.summary }>
+            { album.summary }
+          </div>
+          <ul>
+            { _.values(album.direct_links).map((link) => {
+                return(
+                  <li>
+                    <a href={ link }>{ link }</a>
+                  </li>
+                )
+              })
+            }
+          </ul>
         </div>
-        <ul>
-          { _.values(album.direct_links).map((link) => {
-              return(
-                <li>
-                  <a href={ link }>{ link }</a>
-                </li>
-              )
-            })
-          }
-        </ul>
       </div>
     );
+
   }
 })
 
